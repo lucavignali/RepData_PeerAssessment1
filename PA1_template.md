@@ -1,6 +1,7 @@
 # Reproducible Research: Peer Assessment 1
 
 
+
 ## Loading and preprocessing the data
 The data to be analyzed is included in the archive activity.zip.The full data set is loaded and a copy of it is created without the missing values = NA. Both datasets, with and without missing values, are needed to answer the following questions.
 
@@ -45,19 +46,40 @@ Median_Steps <- as.integer(median(Day_Steps$step))
 
 library(ggplot2)
 g <- ggplot(Day_Steps, aes(date,steps)) + geom_bar(stat="identity")
-g <- g + labs(title="Steps per day")
-g <- g + geom_hline(yintercept = c(Mean_Steps,Median_Steps))
+g <- g + labs(title="Number of Steps per day")
+g <- g + geom_hline(yintercept = c(Mean_Steps,Median_Steps), color = "blue", size = 1)
 plot(g)
 ```
 
 ![](PA1_template_files/figure-html/Steps_per_day-1.png) 
 
-The picture is also showing the median 10765 and mean 10766 number of steps per day over the two months observation period. 
+The picture is also showing in blue the median = 10765 and mean = 10766 number of steps per day over the two months observation period. 
 
 
 
 
 ## What is the average daily activity pattern?
+Moving to the 5 minutes data resolution, the activity pattern over the 2 months observation period, is reported in the following graph.
+
+
+```r
+Mean_Step_5 <- as.integer(mean(OK_Steps$steps))
+iMax_Step_5 <- which.max(OK_Steps$steps)
+Max_Step <- OK_Steps[iMax_Step_5,]
+
+g <- ggplot(OK_Steps, aes(date,steps)) + geom_line()
+g <- g + labs(title = "Number of Steps per 5 minutes")
+g <- g + geom_hline(yintercept = Mean_Step_5, color = "blue", size = 1)
+g <- g + geom_point(data=Max_Step, aes(date,steps), color = "red", size = 4)
+plot(g)
+```
+
+![](PA1_template_files/figure-html/Steps_5_min-1.png) 
+
+The picture is also showing in blue the mean = 37 number of steps every 5 minutes over the two months observation period. 
+
+Finally the maximum number of steps made in 5 minutes period is equal to 806 and occurred on the 2012-11-27 at time interval 615.
+
 
 
 
