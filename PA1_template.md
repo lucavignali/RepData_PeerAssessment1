@@ -59,7 +59,7 @@ The picture is also showing in blue the median = 10765 and mean = 10766 number o
 
 
 ## What is the average daily activity pattern?
-Moving to the 5 minutes data resolution, the activity pattern over the 2 months observation period, is reported in the following graph.
+Moving to the 5 minutes data granularity, the activity pattern over the 2 months observation period, is reported in the following graph.
 
 
 ```r
@@ -78,12 +78,42 @@ plot(g)
 
 The picture is also showing in blue the mean = 37 number of steps every 5 minutes over the two months observation period. 
 
-Finally the maximum number of steps made in 5 minutes period is equal to 806 and occurred on the 2012-11-27 at time interval 615.
+Finally the maximum number of steps made in 5 minutes period is equal to 806 and occurred on the 2012-11-27 at time interval 615, corresponding to the red point in the previous figure.
 
 
 
 
 ## Imputing missing values
+Now let's evalute the impact of missing values on previously calculated mean and median per day.
+
+
+```r
+iNA_Steps <- (is.na(All_Steps$steps))
+NA_Steps <- sum(iNA_Steps)
+Full_Steps <- All_Steps
+Full_Steps[iNA_Steps,"steps"] <- Mean_Step_5
+
+Full_Day_Steps <- with(Full_Steps,aggregate(steps, by = list(date), sum))
+names(Full_Day_Steps) <- c("date", "steps")
+Full_Mean_Steps <- as.integer(mean(Full_Day_Steps$step))
+Full_Median_Steps <- as.integer(median(Full_Day_Steps$step))
+
+g <- ggplot(Full_Day_Steps, aes(date,steps)) + geom_bar(stat="identity")
+g <- g + labs(title="Number of Steps per day")
+g <- g + geom_hline(yintercept = c(Full_Mean_Steps,Full_Median_Steps), color = "blue", size = 1)
+plot(g)
+```
+
+![](PA1_template_files/figure-html/Missing_Values-1.png) 
+
+The number of NA value in the unnprocessed data set, is equal to 2304.
+In order to evaluate the impact of NA on calculated data, we will substitute NA with the previously calulated Mean_Step_5, equal to 37. 
+
+The mean and median steps per day calculated with imputed missing values, are equal to 10751 and 10656 respectively, that are different from previously calcualted mean and median values.
+
+THe impact of the imputed missing values is to decrease both mean value from 10766 to 10751 and median value from 10765 to 10656.
+
+
 
 
 

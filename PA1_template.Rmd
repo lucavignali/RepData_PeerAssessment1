@@ -57,7 +57,7 @@ The picture is also showing in blue the median = `r Median_Steps` and mean = `r 
 
 
 ## What is the average daily activity pattern?
-Moving to the 5 minutes data resolution, the activity pattern over the 2 months observation period, is reported in the following graph.
+Moving to the 5 minutes data granularity, the activity pattern over the 2 months observation period, is reported in the following graph.
 
 ```{r Steps_5_min}
 Mean_Step_5 <- as.integer(mean(OK_Steps$steps))
@@ -73,12 +73,40 @@ plot(g)
 
 The picture is also showing in blue the mean = `r Mean_Step_5` number of steps every 5 minutes over the two months observation period. 
 
-Finally the maximum number of steps made in 5 minutes period is equal to `r Max_Step$step` and occurred on the `r Max_Step$date` at time interval `r Max_Step$interval`.
+Finally the maximum number of steps made in 5 minutes period is equal to `r Max_Step$step` and occurred on the `r Max_Step$date` at time interval `r Max_Step$interval`, corresponding to the red point in the previous figure.
 
 
 
 
 ## Imputing missing values
+Now let's evalute the impact of missing values on previously calculated mean and median per day.
+
+```{r Missing_Values}
+iNA_Steps <- (is.na(All_Steps$steps))
+NA_Steps <- sum(iNA_Steps)
+Full_Steps <- All_Steps
+Full_Steps[iNA_Steps,"steps"] <- Mean_Step_5
+
+Full_Day_Steps <- with(Full_Steps,aggregate(steps, by = list(date), sum))
+names(Full_Day_Steps) <- c("date", "steps")
+Full_Mean_Steps <- as.integer(mean(Full_Day_Steps$step))
+Full_Median_Steps <- as.integer(median(Full_Day_Steps$step))
+
+g <- ggplot(Full_Day_Steps, aes(date,steps)) + geom_bar(stat="identity")
+g <- g + labs(title="Number of Steps per day")
+g <- g + geom_hline(yintercept = c(Full_Mean_Steps,Full_Median_Steps), color = "blue", size = 1)
+plot(g)
+
+```
+
+The number of NA value in the unnprocessed data set, is equal to `r NA_Steps`.
+In order to evaluate the impact of NA on calculated data, we will substitute NA with the previously calulated Mean_Step_5, equal to `r Mean_Step_5`. 
+
+The mean and median steps per day calculated with imputed missing values, are equal to `r Full_Mean_Steps` and `r Full_Median_Steps` respectively, that are different from previously calcualted mean and median values.
+
+THe impact of the imputed missing values is to decrease both mean value from `r Mean_Steps` to `r Full_Mean_Steps` and median value from `r Median_Steps` to `r Full_Median_Steps`.
+
+
 
 
 
